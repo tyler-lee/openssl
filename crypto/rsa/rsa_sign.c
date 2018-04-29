@@ -75,20 +75,18 @@ int RSA_sign(int type, const unsigned char *m, unsigned int m_len,
 
     if (rsa->meth->rsa_sign) {
 #ifdef __SSGX_ENABLE__
-		printf("%s, %d: Hello\n", __FUNCTION__, __LINE__);
-
 		int policy;
 		int priority;
 		int new_policy = SCHED_RR;
 		int new_priority = sched_get_priority_max(new_policy);
-		show_thread_policy_and_priority();
+
 		int temp_ret = local_sched_policy_priority_save(new_policy, new_priority, &policy, &priority);
 		assert(temp_ret == 0);
-		show_thread_policy_and_priority();
+
 		ret = rsa->meth->rsa_sign(type, m, m_len, sigret, siglen, rsa);
+
 		temp_ret = local_sched_policy_priority_restore(policy, priority);
 		assert(temp_ret == 0);
-		show_thread_policy_and_priority();
 
 		return ret;
 #else
