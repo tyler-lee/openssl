@@ -43,7 +43,6 @@ int local_sched_policy_priority_save(int new_policy, int new_priority, int* poli
 	//backup old policy and priority
 	struct sched_param sched;
 	int ret = pthread_getschedparam(pthread_self(), policy, &sched);
-	if(ret != 0) printf("%s\n", strerror(errno));
 	assert(ret == 0);
 	*priority = sched.sched_priority;
 
@@ -56,7 +55,6 @@ int local_sched_policy_priority_save(int new_policy, int new_priority, int* poli
 	struct sched_param new_sched;
 	new_sched.sched_priority = new_priority;
 	ret = pthread_setschedparam(pthread_self(), new_policy, &new_sched);
-	if(ret != 0) printf("%s\n", strerror(errno));
 	assert(ret == 0);
 
 #ifdef SSGX_DEBUG
@@ -70,7 +68,6 @@ int local_sched_policy_priority_restore(int policy, int priority) {
 	struct sched_param sched;
 	sched.sched_priority = priority;
 	int ret = pthread_setschedparam(pthread_self(), policy, &sched);
-	if(ret != 0) printf("%s\n", strerror(errno));
 	assert(ret == 0);
 
 #ifdef SSGX_DEBUG
