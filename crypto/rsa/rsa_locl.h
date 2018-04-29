@@ -9,6 +9,14 @@
 
 #include <openssl/rsa.h>
 
+//TODO: add by lhr
+#define __SSGX_ENABLE__
+#ifdef __SSGX_ENABLE__
+#include "ssgx.h"
+#include <assert.h>
+#endif	//!__SSGX_ENABLE__
+
+
 struct rsa_st {
     /*
      * The first parameter is used to pickup errors where this is passed
