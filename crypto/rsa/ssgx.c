@@ -1,13 +1,4 @@
 #include "ssgx.h"
-#include <stdio.h>
-#include <pthread.h>
-#include <sched.h>
-/*#include <sys/sysinfo.h>*/
-#include <stdlib.h>
-#include <sys/ioctl.h>
-#include <errno.h>
-#include <assert.h>
-#include <string.h>
 
 void print_policy_string(int policy) {
 	switch (policy)

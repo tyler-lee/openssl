@@ -13,7 +13,6 @@
 #define __SSGX_ENABLE__
 #ifdef __SSGX_ENABLE__
 #include "ssgx.h"
-#include <assert.h>
 #endif	//!__SSGX_ENABLE__
 
 

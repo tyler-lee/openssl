@@ -1,6 +1,14 @@
 #ifndef __SSGX_H__
 #define __SSGX_H__
 
+#include <stdio.h>
+#include <pthread.h>
+#include <sched.h>
+#include <stdlib.h>
+#include <sys/ioctl.h>
+#include <errno.h>
+#include <assert.h>
+#include <string.h>
 
 int local_sched_policy_priority_save(int new_policy, int new_priority, int* policy, int* priority);
 int local_sched_policy_priority_restore(int policy, int priority);
