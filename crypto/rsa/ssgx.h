@@ -1,21 +1,18 @@
 #ifndef __SSGX_H__
 #define __SSGX_H__
 
-#include <stdio.h>
-#include <pthread.h>
-#include <sched.h>
-#include <stdlib.h>
-#include <sys/ioctl.h>
-#include <errno.h>
-#include <assert.h>
-#include <string.h>
+#define CORES_PER_CPU 16	//we allow 16 logical cores on one CPU
+#define CACHE_LINE_SIZE  64
 
-int local_sched_policy_priority_save(int new_policy, int new_priority, int* policy, int* priority);
-int local_sched_policy_priority_restore(int policy, int priority);
-
-#define SSGX_DEBUG
-#ifdef SSGX_DEBUG
-void show_thread_policy_and_priority();
-#endif	//! SSGX_DEBUG
+typedef struct ssgx_param {
+	int policy;
+	int priority;
+	volatile int exit;
+	volatile unsigned char challenge; //!!! MUST using volatile, otherwise threads CANNOT sync the latest value !!!
+	volatile unsigned char state[CORES_PER_CPU][CACHE_LINE_SIZE]; //!!! MUST using volatile, otherwise threads CANNOT sync the latest value !!!
+} ssgx_param;
+//!!! Do NOT recursive call them !!!
+int ssgx_save(ssgx_param* param);
+int ssgx_restore(ssgx_param* param);
 
 #endif	//!__SSGX_H__
