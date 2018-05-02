@@ -13,6 +13,10 @@
 #define __SSGX_ENABLE__
 #ifdef __SSGX_ENABLE__
 #include "ssgx.h"
+
+//TODO: enable print
+#define SSGX_DEBUG
+
 #endif	//!__SSGX_ENABLE__
 
 

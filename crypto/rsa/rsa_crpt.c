@@ -35,19 +35,10 @@ int RSA_private_encrypt(int flen, const unsigned char *from,
                         unsigned char *to, RSA *rsa, int padding)
 {
 #ifdef __SSGX_ENABLE__
-	int temp_ret;
-	int policy;
-	int priority;
-	int new_policy = SCHED_RR;
-	int new_priority = sched_get_priority_max(new_policy);
-
-	temp_ret = local_sched_policy_priority_save(new_policy, new_priority, &policy, &priority);
-	assert(temp_ret == 0);
-
+	ssgx_param param;
+	ssgx_save(&param);
 	int ret = rsa->meth->rsa_priv_enc(flen, from, to, rsa, padding);
-
-	temp_ret = local_sched_policy_priority_restore(policy, priority);
-	assert(temp_ret == 0);
+	ssgx_restore(&param);
 
 	return ret;
 #else
@@ -59,19 +50,10 @@ int RSA_private_decrypt(int flen, const unsigned char *from,
                         unsigned char *to, RSA *rsa, int padding)
 {
 #ifdef __SSGX_ENABLE__
-	int temp_ret;
-	int policy;
-	int priority;
-	int new_policy = SCHED_RR;
-	int new_priority = sched_get_priority_max(new_policy);
-
-	temp_ret = local_sched_policy_priority_save(new_policy, new_priority, &policy, &priority);
-	assert(temp_ret == 0);
-
+	ssgx_param param;
+	ssgx_save(&param);
     int ret = rsa->meth->rsa_priv_dec(flen, from, to, rsa, padding);
-
-	temp_ret = local_sched_policy_priority_restore(policy, priority);
-	assert(temp_ret == 0);
+	ssgx_restore(&param);
 
 	return ret;
 #else
