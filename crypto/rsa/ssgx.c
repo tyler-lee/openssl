@@ -158,8 +158,19 @@ int ssgx_save(ssgx_param* param)
 		if(all_online == 1) break;
 	}
 	if(count > limit) {
-		printf("Exceed time limit: %d (limit: %d)\n", count, limit);
-		abort();
+		//TODO: raise an alarm
+		errno = ETIME;	//ETIME: timer expired
+		//EBADMSG is: Bad message
+		//ENOTSUP is: Operation not supported
+		//ECANCELED is: Operation canceled
+		//EPERM is: Operation not permitted
+		char errstr[100];
+		snprintf(errstr, 100, "Exceed time limit: %d (limit: %d)", count, limit);
+		perror(errstr);
+		//TODO: Abort seems not reasonable in library
+		/*abort();*/
+		assert(0);
+		return -1;
 	}
 #else
 	while (limit-- > 0) {
@@ -174,8 +185,12 @@ int ssgx_save(ssgx_param* param)
 #endif	//! SSGX_DEBUG
 	if(limit < 0) {
 		//TODO: raise an alarm
-		printf("Check dummy threads fail\n");
-		abort();
+		errno = ETIME
+		perror("Check dummy threads fail");
+		//TODO: Abort seems not reasonable in library
+		/*abort();*/
+		assert(0);
+		return -1;
 	}
 #endif
 

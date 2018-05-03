@@ -267,8 +267,8 @@ int main(int argc, char *argv[])
         if (num != plen || memcmp(ptext, ptext_ex, num) != 0) {
             printf("PKCS#1 v1.5 decryption failed!\n");
             err = 1;
-        } else
-            printf("PKCS #1 v1.5 encryption/decryption ok\n");
+        }
+		else printf("PKCS #1 v1.5 encryption/decryption ok\n");
 
  oaep:
         ERR_clear_error();
@@ -303,8 +303,8 @@ int main(int argc, char *argv[])
         if (num != plen || memcmp(ptext, ptext_ex, num) != 0) {
             printf("OAEP decryption (test vector data) failed!\n");
             err = 1;
-        } else
-            printf("OAEP encryption/decryption ok\n");
+        }
+		else printf("OAEP encryption/decryption ok\n");
 
         /* Try decrypting corrupted ciphertexts. */
         /*for (n = 0; n < clen; ++n) {*/
