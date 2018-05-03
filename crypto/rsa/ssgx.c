@@ -91,6 +91,8 @@ void* pthread_seize_core(void* arg) {
 
 int ssgx_save(ssgx_param* param)
 {
+	memset(param, 0, sizeof(ssgx_param));
+
 	//backup schedule policy and priority
 	struct sched_param sched;
 	int ret = pthread_getschedparam(pthread_self(), &(param->policy), &sched);
@@ -124,8 +126,8 @@ int ssgx_save(ssgx_param* param)
 	pthread_attr_t attr;
 	ret = pthread_attr_init(&attr);
 	assert(ret == 0);
-	ret = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-	assert(ret == 0);
+	/*ret = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);*/
+	/*assert(ret == 0);*/
 	ret = pthread_attr_setinheritsched(&attr, PTHREAD_INHERIT_SCHED);
 	assert(ret == 0);
 	thread_info info[CORES_PER_CPU];
@@ -144,7 +146,8 @@ int ssgx_save(ssgx_param* param)
 	//check dummy threads
 	srand(time(NULL));
 	param->challenge = rand() & 0xFF;
-#if 0
+	int limit = 4000;
+#if 1
 	int all_online = 1;
 	int count = 0;
 	while(++count) {
@@ -154,36 +157,29 @@ int ssgx_save(ssgx_param* param)
 		}
 		if(all_online == 1) break;
 	}
-#ifdef SSGX_DEBUG
-	printf("Try times: %d\n", count);
-#endif	//! SSGX_DEBUG
+	if(count > limit) {
+		printf("Exceed time limit: %d (limit: %d)\n", count, limit);
+		abort();
+	}
 #else
-	int tries = 2000;	//TODO: try how many times before check dummy threads
-	while (tries-- > 0) {
+	while (limit-- > 0) {
 		int all_online = 1;
 		for(int i=1; i<cores; ++i) {
 			if(param->challenge != param->state[i][0]) {all_online=0;break;}
 		}
 		if(all_online == 1) break;
 	}
-	/*for(int i=1; i<cores; ++i) {*/
-		/*if(param->challenge != param->state[i][0]) {*/
-			/*all_online = 0;*/
-			/*break;*/
-		/*}*/
-	/*}*/
-
 #ifdef SSGX_DEBUG
-	printf("Left times: %d, exit: %d\n", tries, param->exit);
+	printf("Left times: %d, exit: %d\n", limit, param->exit);
 #endif	//! SSGX_DEBUG
-	if(tries < 0) {
+	if(limit < 0) {
 		//TODO: raise an alarm
-#ifdef SSGX_DEBUG
 		printf("Check dummy threads fail\n");
-#endif	//! SSGX_DEBUG
 		abort();
 	}
 #endif
+
+	//TODO: do extra check, i.e., AEX detection
 
 	return 0;
 }
