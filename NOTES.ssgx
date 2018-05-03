@@ -1,0 +1,6 @@
+Note:
+1. To make ssgx available, compile openssl statically, typically:
+	./config --prefix=/path/to/openssl -fPIC no-shared
+
+2. Specify responding polices to address alarms in crypto/rsa/ssgx.c
+
